@@ -145,13 +145,12 @@ const Services: React.FC = () => {
             <h3 className="text-2xl font-bold font-display text-gray-900 mb-8">
               Our Practice & Facilities
             </h3>
-            <div className="masonry-grid">
-              <div className="masonry-item">
-                <div className="premium-card overflow-hidden group">
+            <div className="image-grid">
+              <div className="premium-card overflow-hidden group">
                 <img
                   src="/WhatsApp Image 2025-07-22 at 19.04.39.jpeg"
                   alt="Dr. Kavya at Government Hospital Kundapura"
-                  className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="p-6">
                   <div className="flex items-center space-x-3">
@@ -164,14 +163,13 @@ const Services: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                </div>
               </div>
-              <div className="masonry-item">
-                <div className="premium-card overflow-hidden group">
+              
+              <div className="premium-card overflow-hidden group">
                 <img
                   src="/WhatsApp Image 2025-07-22 at 19.02.39.jpeg"
                   alt="Ballal's Clinic Santhekatte"
-                  className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="p-6">
                   <div className="flex items-center space-x-3">
@@ -183,7 +181,6 @@ const Services: React.FC = () => {
                       <p className="text-sm text-gray-600">Santhekatte, Udupi</p>
                     </div>
                   </div>
-                </div>
                 </div>
               </div>
             </div>

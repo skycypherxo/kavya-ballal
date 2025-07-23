@@ -205,13 +205,12 @@ const Credentials: React.FC = () => {
           </div>
           
           {/* Classical Dance Images */}
-          <div className="mb-12 masonry-grid">
-            <div className="masonry-item">
-              <div className="premium-card overflow-hidden group">
+          <div className="mb-12 image-grid">
+            <div className="premium-card overflow-hidden group">
                 <img
                   src="/WhatsApp Image 2025-07-22 at 19.03.14.jpeg"
                   alt="Dr. Kavya performing surgery"
-                  className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="p-6">
                   <div className="flex items-center space-x-3">
@@ -222,14 +221,13 @@ const Credentials: React.FC = () => {
                   </div>
                   <p className="text-gray-600 mt-2">Advanced laparoscopic procedures</p>
                 </div>
-              </div>
             </div>
-            <div className="masonry-item">
-              <div className="premium-card overflow-hidden group">
+            
+            <div className="premium-card overflow-hidden group">
                 <img
                   src="/WhatsApp Image 2025-07-22 at 19.08.32.jpeg"
                   alt="Dr. Kavya in medical consultation"
-                  className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="p-6">
                   <div className="flex items-center space-x-3">
@@ -240,14 +238,13 @@ const Credentials: React.FC = () => {
                   </div>
                   <p className="text-gray-600 mt-2">Comprehensive medical consultation</p>
                 </div>
-              </div>
             </div>
-            <div className="masonry-item">
-              <div className="premium-card overflow-hidden group">
+            
+            <div className="premium-card overflow-hidden group">
                 <img
                   src="/WhatsApp Image 2025-07-23 at 08.08.29.jpeg"
                   alt="Dr. Kavya in medical practice"
-                  className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="p-6">
                   <div className="flex items-center space-x-3">
@@ -258,7 +255,6 @@ const Credentials: React.FC = () => {
                   </div>
                   <p className="text-gray-600 mt-2">Professional medical practice</p>
                 </div>
-              </div>
             </div>
           </div>
           

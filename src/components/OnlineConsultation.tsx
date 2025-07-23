@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Calendar, Clock, Video, Phone, MessageCircle, CheckCircle, Send, ChevronLeft, ChevronRight } from 'lucide-react';
+import { supabase, type Booking } from '../lib/supabase';
 
 const OnlineConsultation: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -62,48 +63,60 @@ const OnlineConsultation: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Create email content
-    const emailSubject = `Online Consultation Booking - ${formData.name}`;
-    const emailBody = `
-New Online Consultation Booking:
+    handleBookingSubmit();
+  };
 
-Patient Details:
-- Name: ${formData.name}
-- Email: ${formData.email}
-- Phone: ${formData.phone}
-- Age: ${formData.age}
+  const handleBookingSubmit = async () => {
+    if (!selectedDate || !selectedTime) {
+      alert('Please select both date and time');
+      return;
+    }
 
-Consultation Details:
-- Type: ${consultationTypes.find(type => type.id === consultationType)?.title}
-- Date: ${selectedDate?.toLocaleDateString()}
-- Time: ${selectedTime}
-- Previous Consultation: ${formData.previousConsultation}
+    try {
+      const bookingData: Omit<Booking, 'id' | 'created_at' | 'updated_at' | 'status'> = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        age: parseInt(formData.age),
+        consultation_type: consultationType,
+        appointment_date: selectedDate.toISOString().split('T')[0],
+        appointment_time: selectedTime,
+        concern: formData.concern,
+        previous_consultation: formData.previousConsultation === 'yes'
+      };
 
-Chief Concern:
-${formData.concern}
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/book-appointment`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bookingData)
+      });
 
-Please confirm the appointment and send consultation link/details.
-    `;
+      const result = await response.json();
 
-    // Create mailto link
-    const mailtoLink = `mailto:kavyabhat23895@gmail.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
-    
-    // Open email client
-    window.location.href = mailtoLink;
-    
-    // Reset form
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      age: '',
-      concern: '',
-      previousConsultation: 'no'
-    });
-    setSelectedDate(null);
-    setSelectedTime('');
-    
-    alert('Thank you for your message. Your email client will open to send the message.');
+      if (response.ok) {
+        alert('Booking successful! You will receive a confirmation email shortly.');
+        
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          age: '',
+          concern: '',
+          previousConsultation: 'no'
+        });
+        setSelectedDate(null);
+        setSelectedTime('');
+      } else {
+        alert(result.error || 'Booking failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Booking error:', error);
+      alert('Booking failed. Please try again.');
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
