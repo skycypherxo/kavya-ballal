@@ -86,9 +86,10 @@ const Services: React.FC = () => {
         </div>
 
         {/* Main Services */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+        <div className="masonry-grid mb-20">
           {services.map((service, index) => (
-            <div key={index} className="bg-white rounded-2xl shadow-lg p-8 hover-lift group transition-all duration-300">
+            <div key={index} className="masonry-item">
+              <div className="premium-card p-8 group transition-all duration-300">
               <div className="flex items-center mb-6">
                 <div className={`inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br ${getColorClasses(service.color)} rounded-2xl group-hover:scale-110 transition-transform`}>
                   <service.icon size={24} />
@@ -108,6 +109,7 @@ const Services: React.FC = () => {
                   </li>
                 ))}
               </ul>
+              </div>
             </div>
           ))}
         </div>
@@ -119,7 +121,7 @@ const Services: React.FC = () => {
           </h3>
           <div className="grid md:grid-cols-2 gap-8">
             {specializations.map((spec, index) => (
-              <div key={index} className="bg-gradient-to-br from-blue-50 to-teal-50 rounded-2xl p-8 hover-lift">
+              <div key={index} className="premium-card p-8 hover-lift bg-gradient-to-br from-blue-50 to-teal-50">
                 <div className="flex items-center mb-4">
                   <div className="inline-flex items-center justify-center w-12 h-12 bg-white rounded-xl shadow-md">
                     <spec.icon className="text-blue-600" size={20} />
@@ -137,37 +139,51 @@ const Services: React.FC = () => {
         </div>
 
         {/* Call to Action */}
-        <div className="text-center bg-white rounded-3xl p-12 shadow-lg">
+        <div className="text-center premium-card p-12">
           {/* Practice Images */}
           <div className="mb-12">
             <h3 className="text-2xl font-bold font-display text-gray-900 mb-8">
               Our Practice & Facilities
             </h3>
-            <div className="grid md:grid-cols-2 gap-8 mb-8">
-              <div className="relative group overflow-hidden rounded-2xl shadow-lg hover-lift">
+            <div className="masonry-grid">
+              <div className="masonry-item">
+                <div className="premium-card overflow-hidden group">
                 <img
                   src="/WhatsApp Image 2025-07-22 at 19.04.39.jpeg"
                   alt="Dr. Kavya at Government Hospital Kundapura"
-                  className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-300 bg-gray-50"
+                  className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent">
-                  <div className="absolute bottom-4 left-4 text-white">
-                    <h4 className="font-semibold text-lg">Government Hospital</h4>
-                    <p className="text-sm">Kundapura, Karnataka</p>
+                <div className="p-6">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <MapPin className="text-blue-600" size={18} />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900">Government Hospital</h4>
+                      <p className="text-sm text-gray-600">Kundapura, Karnataka</p>
+                    </div>
                   </div>
                 </div>
+                </div>
               </div>
-              <div className="relative group overflow-hidden rounded-2xl shadow-lg hover-lift">
+              <div className="masonry-item">
+                <div className="premium-card overflow-hidden group">
                 <img
                   src="/WhatsApp Image 2025-07-22 at 19.02.39.jpeg"
                   alt="Ballal's Clinic Santhekatte"
-                  className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-300 bg-gray-50"
+                  className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent">
-                  <div className="absolute bottom-4 left-4 text-white">
-                    <h4 className="font-semibold text-lg">Ballal's Clinic</h4>
-                    <p className="text-sm">Santhekatte, Udupi</p>
+                <div className="p-6">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
+                      <MapPin className="text-teal-600" size={18} />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900">Ballal's Clinic</h4>
+                      <p className="text-sm text-gray-600">Santhekatte, Udupi</p>
+                    </div>
                   </div>
+                </div>
                 </div>
               </div>
             </div>

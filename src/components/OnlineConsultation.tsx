@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Calendar, Clock, Video, Phone, MessageCircle, CheckCircle, Send } from 'lucide-react';
+import { Calendar, Clock, Video, Phone, MessageCircle, CheckCircle, Send, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const OnlineConsultation: React.FC = () => {
-  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState('');
   const [consultationType, setConsultationType] = useState('video');
+  const [currentMonth, setCurrentMonth] = useState(new Date());
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -15,9 +16,20 @@ const OnlineConsultation: React.FC = () => {
   });
 
   const timeSlots = [
-    '09:00 AM', '09:30 AM', '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM',
-    '02:00 PM', '02:30 PM', '03:00 PM', '03:30 PM', '04:00 PM', '04:30 PM',
-    '05:00 PM', '05:30 PM'
+    { time: '09:00 AM', available: true },
+    { time: '09:30 AM', available: true },
+    { time: '10:00 AM', available: false },
+    { time: '10:30 AM', available: true },
+    { time: '11:00 AM', available: true },
+    { time: '11:30 AM', available: true },
+    { time: '02:00 PM', available: true },
+    { time: '02:30 PM', available: false },
+    { time: '03:00 PM', available: true },
+    { time: '03:30 PM', available: true },
+    { time: '04:00 PM', available: true },
+    { time: '04:30 PM', available: true },
+    { time: '05:00 PM', available: true },
+    { time: '05:30 PM', available: true }
   ];
 
   const consultationTypes = [
@@ -63,7 +75,7 @@ Patient Details:
 
 Consultation Details:
 - Type: ${consultationTypes.find(type => type.id === consultationType)?.title}
-- Date: ${selectedDate}
+- Date: ${selectedDate?.toLocaleDateString()}
 - Time: ${selectedTime}
 - Previous Consultation: ${formData.previousConsultation}
 
@@ -88,6 +100,8 @@ Please confirm the appointment and send consultation link/details.
       concern: '',
       previousConsultation: 'no'
     });
+    setSelectedDate(null);
+    setSelectedTime('');
     
     alert('Thank you for your message. Your email client will open to send the message.');
   };
@@ -99,16 +113,75 @@ Please confirm the appointment and send consultation link/details.
     });
   };
 
-  // Generate next 14 days for date selection
-  const getAvailableDates = () => {
-    const dates = [];
+  // Calendar functions
+  const getDaysInMonth = (date: Date) => {
+    return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+  };
+
+  const getFirstDayOfMonth = (date: Date) => {
+    return new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+  };
+
+  const isDateAvailable = (date: Date) => {
     const today = new Date();
-    for (let i = 1; i <= 14; i++) {
-      const date = new Date(today);
-      date.setDate(today.getDate() + i);
-      dates.push(date.toISOString().split('T')[0]);
+    const maxDate = new Date();
+    maxDate.setDate(today.getDate() + 30);
+    return date >= today && date <= maxDate && date.getDay() !== 0; // Not Sunday
+  };
+
+  const renderCalendar = () => {
+    const daysInMonth = getDaysInMonth(currentMonth);
+    const firstDay = getFirstDayOfMonth(currentMonth);
+    const days = [];
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+    // Day headers
+    dayNames.forEach(day => {
+      days.push(
+        <div key={day} className="text-center text-sm font-medium text-gray-500 py-2">
+          {day}
+        </div>
+      );
+    });
+
+    // Empty cells for days before month starts
+    for (let i = 0; i < firstDay; i++) {
+      days.push(<div key={`empty-${i}`} className="calendar-day"></div>);
     }
-    return dates;
+
+    // Days of the month
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+      const isAvailable = isDateAvailable(date);
+      const isSelected = selectedDate && 
+        date.getDate() === selectedDate.getDate() &&
+        date.getMonth() === selectedDate.getMonth() &&
+        date.getFullYear() === selectedDate.getFullYear();
+
+      days.push(
+        <div
+          key={day}
+          className={`calendar-day ${isSelected ? 'selected' : ''} ${!isAvailable ? 'disabled' : ''}`}
+          onClick={() => isAvailable && setSelectedDate(date)}
+        >
+          {day}
+        </div>
+      );
+    }
+
+    return days;
+  };
+
+  const nextMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1));
+  };
+
+  const prevMonth = () => {
+    const today = new Date();
+    const newMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1);
+    if (newMonth >= new Date(today.getFullYear(), today.getMonth())) {
+      setCurrentMonth(newMonth);
+    }
   };
 
   return (
@@ -125,11 +198,11 @@ Please confirm the appointment and send consultation link/details.
         </div>
 
         {/* Consultation Types */}
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
+        <div className="grid md:grid-cols-3 gap-8 mb-20">
           {consultationTypes.map((type) => (
             <div
               key={type.id}
-              className={`bg-white rounded-2xl p-8 shadow-lg hover-lift cursor-pointer transition-all duration-300 border-2 ${
+              className={`premium-card p-8 cursor-pointer transition-all duration-300 border-2 ${
                 consultationType === type.id 
                   ? 'border-blue-500 ring-4 ring-blue-100' 
                   : 'border-gray-100 hover:border-blue-200'
@@ -164,7 +237,7 @@ Please confirm the appointment and send consultation link/details.
         </div>
 
         {/* Booking Form */}
-        <div className="bg-white rounded-3xl shadow-2xl p-8 lg:p-12">
+        <div className="premium-card p-8 lg:p-12">
           <h3 className="text-2xl font-bold font-display text-gray-900 mb-8 text-center">
             Book Your Consultation
           </h3>
@@ -233,48 +306,62 @@ Please confirm the appointment and send consultation link/details.
 
             {/* Date and Time Selection */}
             <div>
-              <h4 className="text-lg font-semibold text-gray-900 mb-4">Select Date & Time</h4>
-              <div className="grid md:grid-cols-2 gap-6">
+              <h4 className="text-lg font-semibold text-gray-900 mb-6">Select Date & Time</h4>
+              <div className="grid lg:grid-cols-2 gap-8">
+                {/* Calendar */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Preferred Date *
-                  </label>
-                  <select
-                    value={selectedDate}
-                    onChange={(e) => setSelectedDate(e.target.value)}
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                  >
-                    <option value="">Select a date</option>
-                    {getAvailableDates().map((date) => (
-                      <option key={date} value={date}>
-                        {new Date(date).toLocaleDateString('en-US', {
-                          weekday: 'long',
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric'
-                        })}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="bg-gray-50 rounded-2xl p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <button
+                        type="button"
+                        onClick={prevMonth}
+                        className="p-2 hover:bg-white rounded-lg transition-colors"
+                      >
+                        <ChevronLeft size={20} />
+                      </button>
+                      <h5 className="text-lg font-semibold">
+                        {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                      </h5>
+                      <button
+                        type="button"
+                        onClick={nextMonth}
+                        className="p-2 hover:bg-white rounded-lg transition-colors"
+                      >
+                        <ChevronRight size={20} />
+                      </button>
+                    </div>
+                    <div className="calendar-grid">
+                      {renderCalendar()}
+                    </div>
+                  </div>
                 </div>
+                
+                {/* Time Slots */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Preferred Time *
+                  <label className="block text-sm font-medium text-gray-700 mb-4">
+                    Available Time Slots
                   </label>
-                  <select
-                    value={selectedTime}
-                    onChange={(e) => setSelectedTime(e.target.value)}
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                  >
-                    <option value="">Select a time</option>
-                    {timeSlots.map((time) => (
-                      <option key={time} value={time}>
-                        {time}
-                      </option>
+                  {selectedDate ? (
+                    <div className="grid grid-cols-2 gap-3">
+                      {timeSlots.map((slot) => (
+                        <button
+                          key={slot.time}
+                          type="button"
+                          disabled={!slot.available}
+                          onClick={() => setSelectedTime(slot.time)}
+                          className={`time-slot ${selectedTime === slot.time ? 'selected' : ''} ${!slot.available ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        >
+                          {slot.time}
+                          {!slot.available && <div className="text-xs text-gray-500 mt-1">Booked</div>}
+                        </button>
                     ))}
-                  </select>
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-gray-500">
+                      <Calendar size={48} className="mx-auto mb-4 opacity-50" />
+                      <p>Please select a date first</p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -333,7 +420,8 @@ Please confirm the appointment and send consultation link/details.
             <div className="text-center">
               <button
                 type="submit"
-                className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-teal-600 text-white font-semibold rounded-xl hover:shadow-xl transition-all duration-300 hover:scale-105"
+                disabled={!selectedDate || !selectedTime}
+                className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-teal-600 text-white font-semibold rounded-xl hover:shadow-xl transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 <Send className="mr-2" size={20} />
                 Book Consultation
@@ -346,7 +434,7 @@ Please confirm the appointment and send consultation link/details.
         </div>
 
         {/* Important Notes */}
-        <div className="mt-16 bg-white rounded-2xl p-8 shadow-lg">
+        <div className="mt-16 premium-card p-8">
           <h3 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
             <CheckCircle className="text-green-600 mr-3" size={24} />
             Important Information

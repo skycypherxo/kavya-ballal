@@ -81,3 +81,118 @@ body {
   transform: translateY(-8px);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
+
+/* Pinterest-style masonry grid */
+.masonry-grid {
+  column-count: 3;
+  column-gap: 1.5rem;
+  column-fill: balance;
+}
+
+.masonry-item {
+  break-inside: avoid;
+  margin-bottom: 1.5rem;
+  display: inline-block;
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .masonry-grid {
+    column-count: 2;
+  }
+}
+
+@media (max-width: 640px) {
+  .masonry-grid {
+    column-count: 1;
+  }
+}
+
+/* Calendar interface styles */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.calendar-day:hover {
+  background-color: #dbeafe;
+  transform: scale(1.05);
+}
+
+.calendar-day.selected {
+  background: linear-gradient(135deg, #2563eb, #0d9488);
+  color: white;
+}
+
+.calendar-day.disabled {
+  color: #d1d5db;
+  cursor: not-allowed;
+}
+
+.calendar-day.disabled:hover {
+  background-color: transparent;
+  transform: none;
+}
+
+.time-slot {
+  padding: 0.75rem 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  font-weight: 500;
+}
+
+.time-slot:hover {
+  border-color: #3b82f6;
+  background-color: #eff6ff;
+  transform: translateY(-2px);
+}
+
+.time-slot.selected {
+  background: linear-gradient(135deg, #2563eb, #0d9488);
+  border-color: #2563eb;
+  color: white;
+}
+
+/* Enhanced card styles */
+.premium-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.premium-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+/* Improved gradients */
+.gradient-medical {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.gradient-success {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.gradient-warm {
+  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+}

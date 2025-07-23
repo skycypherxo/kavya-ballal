@@ -21,27 +21,27 @@ const Hero: React.FC = () => {
               <span>Practicing in Udupi, Karnataka</span>
             </div>
             
-            <h1 className="text-5xl lg:text-6xl font-bold font-display text-gray-900 mb-6 leading-tight">
+            <h1 className="text-6xl lg:text-7xl font-bold font-display text-gray-900 mb-6 leading-tight">
               Dr. Kavya <span className="gradient-text">Ballal</span>
             </h1>
             
             <div className="space-y-2 mb-8">
-              <h2 className="text-xl lg:text-2xl text-gray-700 font-medium">
+              <h2 className="text-2xl lg:text-3xl text-gray-700 font-medium">
                 Obstetrician & Gynecologist
               </h2>
-              <h3 className="text-lg lg:text-xl text-blue-600 font-medium">
+              <h3 className="text-xl lg:text-2xl text-blue-600 font-medium">
                 Minimal Access Surgeon | Classical Artist
               </h3>
             </div>
             
-            <p className="text-lg text-gray-600 mb-8 leading-relaxed max-w-xl">
+            <p className="text-xl text-gray-600 mb-8 leading-relaxed max-w-xl">
               Delivering comprehensive, compassionate, and evidence-based care across all stages 
               of a woman's reproductive life with over 5 years of clinical experience.
             </p>
             
             <div className="grid sm:grid-cols-2 gap-4 mb-8">
               <div className="flex items-center space-x-3 group">
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 group-hover:scale-110">
                   <Award size={18} />
                 </div>
                 <div>
@@ -50,7 +50,7 @@ const Hero: React.FC = () => {
                 </div>
               </div>
               <div className="flex items-center space-x-3 group">
-                <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center group-hover:bg-teal-600 group-hover:text-white transition-colors">
+                <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center group-hover:bg-teal-600 group-hover:text-white transition-all duration-300 group-hover:scale-110">
                   <Palette size={18} />
                 </div>
                 <div>
@@ -79,23 +79,23 @@ const Hero: React.FC = () => {
 
           <div className="relative animate-fade-in">
             <div className="relative">
-              <div className="aspect-square bg-gradient-to-br from-blue-100 via-white to-teal-100 rounded-3xl shadow-2xl overflow-hidden">
+              <div className="aspect-[4/5] bg-gradient-to-br from-blue-100 via-white to-teal-100 rounded-3xl shadow-2xl overflow-hidden">
                 <img
                   src="/WhatsApp Image 2025-07-22 at 19.02.39.jpeg"
                   alt="Dr. Kavya Ballal"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain"
                 />
               </div>
               
               {/* Floating cards */}
-              <div className="absolute -top-6 -left-6 bg-white rounded-2xl shadow-xl p-4 animate-float">
+              <div className="absolute -top-4 -right-4 bg-white rounded-2xl shadow-xl p-4 animate-float">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-blue-600">5+</div>
                   <div className="text-sm text-gray-600">Years Experience</div>
                 </div>
               </div>
               
-              <div className="absolute -bottom-8 -right-8 bg-white rounded-2xl shadow-xl p-4 animate-float" style={{animationDelay: '1s'}}>
+              <div className="absolute -bottom-4 -left-4 bg-white rounded-2xl shadow-xl p-4 animate-float" style={{animationDelay: '1s'}}>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-teal-600">2</div>
                   <div className="text-sm text-gray-600">Practice Locations</div>
@@ -106,20 +106,24 @@ const Hero: React.FC = () => {
         </div>
 
         {/* Practice locations */}
-        <div className="mt-16 grid md:grid-cols-2 gap-6 animate-fade-in">
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover-lift">
+        <div className="mt-20 grid md:grid-cols-2 gap-8 animate-fade-in">
+          <div className="premium-card p-8 hover-lift">
             <div className="flex items-center space-x-3 mb-3">
-              <MapPin className="text-blue-600" size={20} />
-              <h3 className="font-semibold text-gray-900">Government Hospital</h3>
+              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                <MapPin className="text-blue-600" size={20} />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900">Government Hospital</h3>
             </div>
-            <p className="text-gray-600">Kundapura, Karnataka</p>
+            <p className="text-gray-600 text-lg">Kundapura, Karnataka</p>
           </div>
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover-lift">
+          <div className="premium-card p-8 hover-lift">
             <div className="flex items-center space-x-3 mb-3">
-              <MapPin className="text-teal-600" size={20} />
-              <h3 className="font-semibold text-gray-900">Ballal's Clinic</h3>
+              <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center">
+                <MapPin className="text-teal-600" size={20} />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900">Ballal's Clinic</h3>
             </div>
-            <p className="text-gray-600">Santhekatte, Udupi</p>
+            <p className="text-gray-600 text-lg">Santhekatte, Udupi</p>
           </div>
         </div>
       </div>

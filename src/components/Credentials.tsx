@@ -4,18 +4,18 @@ import { GraduationCap, Award, Building, Users, BookOpen, Palette } from 'lucide
 const Credentials: React.FC = () => {
   const education = [
     {
-      degree: 'MS in Obstetrics & Gynecology',
-      institution: 'A.J. Institute of Medical Sciences, Mangalore',
-      year: '2019',
-      specialization: 'High-risk obstetrics, gynecologic surgery, and reproductive health',
-      color: 'blue'
-    },
-    {
       degree: 'Fellowship in Minimal Access Surgery',
       institution: 'R.K. School of Endoskills',
       year: '2020',
       specialization: 'Advanced laparoscopic and hysteroscopic surgical techniques',
       color: 'teal'
+    },
+    {
+      degree: 'MS in Obstetrics & Gynecology', 
+      institution: 'A.J. Institute of Medical Sciences, Mangalore',
+      year: '2019',
+      specialization: 'High-risk obstetrics, gynecologic surgery, and reproductive health',
+      color: 'blue'
     },
     {
       degree: 'Bachelor of Medicine (MBBS)',
@@ -205,42 +205,58 @@ const Credentials: React.FC = () => {
           </div>
           
           {/* Classical Dance Images */}
-          <div className="mb-12">
-            <div className="grid md:grid-cols-3 gap-6 mb-8">
-              <div className="relative group overflow-hidden rounded-2xl shadow-lg hover-lift">
+          <div className="mb-12 masonry-grid">
+            <div className="masonry-item">
+              <div className="premium-card overflow-hidden group">
                 <img
                   src="/WhatsApp Image 2025-07-22 at 19.03.14.jpeg"
-                  alt="Dr. Kavya in surgical setting"
-                  className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-300 bg-gray-50"
+                  alt="Dr. Kavya performing surgery"
+                  className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-                  <div className="absolute bottom-4 left-4 text-white">
-                    <p className="font-semibold">Surgical Expertise</p>
+                <div className="p-6">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <Microscope className="text-blue-600" size={18} />
+                    </div>
+                    <h4 className="font-semibold text-gray-900">Surgical Expertise</h4>
                   </div>
+                  <p className="text-gray-600 mt-2">Advanced laparoscopic procedures</p>
                 </div>
               </div>
-              <div className="relative group overflow-hidden rounded-2xl shadow-lg hover-lift">
+            </div>
+            <div className="masonry-item">
+              <div className="premium-card overflow-hidden group">
                 <img
                   src="/WhatsApp Image 2025-07-22 at 19.08.32.jpeg"
-                  alt="Dr. Kavya medical consultation"
-                  className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-300 bg-gray-50"
+                  alt="Dr. Kavya in medical consultation"
+                  className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-                  <div className="absolute bottom-4 left-4 text-white">
-                    <p className="font-semibold">Patient Care</p>
+                <div className="p-6">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
+                      <Award className="text-teal-600" size={18} />
+                    </div>
+                    <h4 className="font-semibold text-gray-900">Patient Care</h4>
                   </div>
+                  <p className="text-gray-600 mt-2">Comprehensive medical consultation</p>
                 </div>
               </div>
-              <div className="relative group overflow-hidden rounded-2xl shadow-lg hover-lift">
+            </div>
+            <div className="masonry-item">
+              <div className="premium-card overflow-hidden group">
                 <img
                   src="/WhatsApp Image 2025-07-23 at 08.08.29.jpeg"
-                  alt="Dr. Kavya medical practice"
-                  className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-300 bg-gray-50"
+                  alt="Dr. Kavya in medical practice"
+                  className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-                  <div className="absolute bottom-4 left-4 text-white">
-                    <p className="font-semibold">Medical Excellence</p>
+                <div className="p-6">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                      <Palette className="text-purple-600" size={18} />
+                    </div>
+                    <h4 className="font-semibold text-gray-900">Medical Excellence</h4>
                   </div>
+                  <p className="text-gray-600 mt-2">Professional medical practice</p>
                 </div>
               </div>
             </div>
