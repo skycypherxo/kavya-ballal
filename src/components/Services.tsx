@@ -1,5 +1,5 @@
 import React from 'react';
-import { Baby, Stethoscope, Scissors, Heart, Shield, Calendar, Microscope, Users } from 'lucide-react';
+import { Baby, Stethoscope, Scissors, Heart, Shield, Calendar, Microscope, Users, MapPin } from 'lucide-react';
 
 const Services: React.FC = () => {
   const services = [
