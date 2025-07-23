@@ -95,7 +95,7 @@ const Hero: React.FC = () => {
                 </div>
               </div>
               
-              <div className="absolute -bottom-6 -right-6 bg-white rounded-2xl shadow-xl p-4 animate-float" style={{animationDelay: '1s'}}>
+              <div className="absolute -bottom-8 -right-8 bg-white rounded-2xl shadow-xl p-4 animate-float" style={{animationDelay: '1s'}}>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-teal-600">2</div>
                   <div className="text-sm text-gray-600">Practice Locations</div>

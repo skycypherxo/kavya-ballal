@@ -157,10 +157,11 @@ const About: React.FC = () => {
             <h3 className="text-2xl font-bold font-display text-gray-900 mb-6">
               Meet Dr. Kavya Ballal
             </h3>
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-2xl mx-auto">
               <video
                 controls
-                className="w-full rounded-2xl shadow-2xl"
+                className="w-full h-auto rounded-2xl shadow-2xl object-cover"
+                style={{ aspectRatio: '9/16', maxHeight: '600px' }}
                 poster="/WhatsApp Image 2025-07-22 at 19.04.39.jpeg"
               >
                 <source src="/KavyaVideo.mp4" type="video/mp4" />

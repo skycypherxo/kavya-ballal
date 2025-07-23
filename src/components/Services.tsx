@@ -148,7 +148,7 @@ const Services: React.FC = () => {
                 <img
                   src="/WhatsApp Image 2025-07-22 at 19.04.39.jpeg"
                   alt="Dr. Kavya at Government Hospital Kundapura"
-                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                  className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-300 bg-gray-50"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent">
                   <div className="absolute bottom-4 left-4 text-white">
@@ -161,7 +161,7 @@ const Services: React.FC = () => {
                 <img
                   src="/WhatsApp Image 2025-07-22 at 19.02.39.jpeg"
                   alt="Ballal's Clinic Santhekatte"
-                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                  className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-300 bg-gray-50"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent">
                   <div className="absolute bottom-4 left-4 text-white">

@@ -210,36 +210,36 @@ const Credentials: React.FC = () => {
               <div className="relative group overflow-hidden rounded-2xl shadow-lg hover-lift">
                 <img
                   src="/WhatsApp Image 2025-07-22 at 19.03.14.jpeg"
-                  alt="Dr. Kavya performing Bharatanatyam"
-                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                  alt="Dr. Kavya in surgical setting"
+                  className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-300 bg-gray-50"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
                   <div className="absolute bottom-4 left-4 text-white">
-                    <p className="font-semibold">Bharatanatyam Performance</p>
+                    <p className="font-semibold">Surgical Expertise</p>
                   </div>
                 </div>
               </div>
               <div className="relative group overflow-hidden rounded-2xl shadow-lg hover-lift">
                 <img
                   src="/WhatsApp Image 2025-07-22 at 19.08.32.jpeg"
-                  alt="Dr. Kavya in classical dance costume"
-                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                  alt="Dr. Kavya medical consultation"
+                  className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-300 bg-gray-50"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
                   <div className="absolute bottom-4 left-4 text-white">
-                    <p className="font-semibold">Kuchipudi Rangapravesham</p>
+                    <p className="font-semibold">Patient Care</p>
                   </div>
                 </div>
               </div>
               <div className="relative group overflow-hidden rounded-2xl shadow-lg hover-lift">
                 <img
                   src="/WhatsApp Image 2025-07-23 at 08.08.29.jpeg"
-                  alt="Dr. Kavya artistic portrait"
-                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                  alt="Dr. Kavya medical practice"
+                  className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-300 bg-gray-50"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
                   <div className="absolute bottom-4 left-4 text-white">
-                    <p className="font-semibold">Classical Arts Training</p>
+                    <p className="font-semibold">Medical Excellence</p>
                   </div>
                 </div>
               </div>
