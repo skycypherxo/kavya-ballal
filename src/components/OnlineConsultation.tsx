@@ -79,7 +79,17 @@ Please confirm the appointment and send consultation link/details.
     // Open email client
     window.location.href = mailtoLink;
     
-    alert('Your consultation request has been submitted! Please check your email client to send the booking details.');
+    // Reset form
+    setFormData({
+      name: '',
+      email: '',
+      phone: '',
+      age: '',
+      concern: '',
+      previousConsultation: 'no'
+    });
+    
+    alert('Thank you for your message. Your email client will open to send the message.');
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
