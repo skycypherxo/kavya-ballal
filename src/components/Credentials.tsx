@@ -1,5 +1,5 @@
 import React from 'react';
-import { GraduationCap, Award, Building, Users, BookOpen, Palette, MapPin } from 'lucide-react';
+import { GraduationCap, Award, Building, Users, BookOpen, Palette, MapPin, Microscope } from 'lucide-react';
 
 const Credentials: React.FC = () => {
   const education = [
