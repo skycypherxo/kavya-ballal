@@ -69,7 +69,7 @@ const About: React.FC = () => {
           <div className="animate-slide-up">
             <div className="relative">
               <img
-                src="https://images.pexels.com/photos/7689942/pexels-photo-7689942.jpeg?auto=compress&cs=tinysrgb&w=600"
+                src="/WhatsApp Image 2025-07-22 at 19.03.13.jpeg"
                 alt="Dr. Kavya in medical setting"
                 className="w-full h-96 object-cover rounded-2xl shadow-2xl"
               />
@@ -152,6 +152,23 @@ const About: React.FC = () => {
 
         {/* Vision Statement */}
         <div className="mt-20 text-center bg-gradient-to-r from-blue-50 to-teal-50 rounded-3xl p-12">
+          {/* Video Section */}
+          <div className="mb-12">
+            <h3 className="text-2xl font-bold font-display text-gray-900 mb-6">
+              Meet Dr. Kavya Ballal
+            </h3>
+            <div className="max-w-4xl mx-auto">
+              <video
+                controls
+                className="w-full rounded-2xl shadow-2xl"
+                poster="/WhatsApp Image 2025-07-22 at 19.04.39.jpeg"
+              >
+                <source src="/KavyaVideo.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+          
           <blockquote className="text-2xl font-display text-gray-800 italic leading-relaxed max-w-4xl mx-auto">
             "I believe in a holistic approach to health — one that bridges modern science with empathy, 
             cultural sensitivity, and personal empowerment. Whether guiding a woman through childbirth 

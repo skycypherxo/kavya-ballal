@@ -81,7 +81,7 @@ const Hero: React.FC = () => {
             <div className="relative">
               <div className="aspect-square bg-gradient-to-br from-blue-100 via-white to-teal-100 rounded-3xl shadow-2xl overflow-hidden">
                 <img
-                  src="https://images.pexels.com/photos/5215024/pexels-photo-5215024.jpeg?auto=compress&cs=tinysrgb&w=600"
+                  src="/WhatsApp Image 2025-07-22 at 19.02.39.jpeg"
                   alt="Dr. Kavya Ballal"
                   className="w-full h-full object-cover"
                 />

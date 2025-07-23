@@ -138,6 +138,41 @@ const Services: React.FC = () => {
 
         {/* Call to Action */}
         <div className="text-center bg-white rounded-3xl p-12 shadow-lg">
+          {/* Practice Images */}
+          <div className="mb-12">
+            <h3 className="text-2xl font-bold font-display text-gray-900 mb-8">
+              Our Practice & Facilities
+            </h3>
+            <div className="grid md:grid-cols-2 gap-8 mb-8">
+              <div className="relative group overflow-hidden rounded-2xl shadow-lg hover-lift">
+                <img
+                  src="/WhatsApp Image 2025-07-22 at 19.04.39.jpeg"
+                  alt="Dr. Kavya at Government Hospital Kundapura"
+                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent">
+                  <div className="absolute bottom-4 left-4 text-white">
+                    <h4 className="font-semibold text-lg">Government Hospital</h4>
+                    <p className="text-sm">Kundapura, Karnataka</p>
+                  </div>
+                </div>
+              </div>
+              <div className="relative group overflow-hidden rounded-2xl shadow-lg hover-lift">
+                <img
+                  src="/WhatsApp Image 2025-07-22 at 19.02.39.jpeg"
+                  alt="Ballal's Clinic Santhekatte"
+                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent">
+                  <div className="absolute bottom-4 left-4 text-white">
+                    <h4 className="font-semibold text-lg">Ballal's Clinic</h4>
+                    <p className="text-sm">Santhekatte, Udupi</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
           <h3 className="text-2xl font-bold font-display text-gray-900 mb-4">
             Ready to Schedule Your Consultation?
           </h3>

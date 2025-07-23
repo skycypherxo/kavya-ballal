@@ -203,6 +203,49 @@ const Credentials: React.FC = () => {
             <Palette className="text-pink-600 mr-3" size={28} />
             <h3 className="text-3xl font-bold font-display text-gray-900">Artistic Excellence</h3>
           </div>
+          
+          {/* Classical Dance Images */}
+          <div className="mb-12">
+            <div className="grid md:grid-cols-3 gap-6 mb-8">
+              <div className="relative group overflow-hidden rounded-2xl shadow-lg hover-lift">
+                <img
+                  src="/WhatsApp Image 2025-07-22 at 19.03.14.jpeg"
+                  alt="Dr. Kavya performing Bharatanatyam"
+                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="absolute bottom-4 left-4 text-white">
+                    <p className="font-semibold">Bharatanatyam Performance</p>
+                  </div>
+                </div>
+              </div>
+              <div className="relative group overflow-hidden rounded-2xl shadow-lg hover-lift">
+                <img
+                  src="/WhatsApp Image 2025-07-22 at 19.08.32.jpeg"
+                  alt="Dr. Kavya in classical dance costume"
+                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="absolute bottom-4 left-4 text-white">
+                    <p className="font-semibold">Kuchipudi Rangapravesham</p>
+                  </div>
+                </div>
+              </div>
+              <div className="relative group overflow-hidden rounded-2xl shadow-lg hover-lift">
+                <img
+                  src="/WhatsApp Image 2025-07-23 at 08.08.29.jpeg"
+                  alt="Dr. Kavya artistic portrait"
+                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="absolute bottom-4 left-4 text-white">
+                    <p className="font-semibold">Classical Arts Training</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
           <div className="grid md:grid-cols-3 gap-8">
             {artisticAchievements.map((achievement, index) => (
               <div key={index} className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl p-8 hover-lift text-center">

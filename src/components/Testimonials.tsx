@@ -4,32 +4,32 @@ import { Star, Quote } from 'lucide-react';
 const Testimonials: React.FC = () => {
   const testimonials = [
     {
-      name: 'Priya Sharma',
+      name: 'Priya S.',
       procedure: 'Laparoscopic Surgery',
       rating: 5,
       text: 'Dr. Kavya performed my laparoscopic surgery with such precision and care. The recovery was much faster than I expected, and her follow-up care was exceptional.',
-      location: 'Mumbai'
+      location: 'Udupi'
     },
     {
-      name: 'Anjali Patel',
+      name: 'Anjali P.',
       procedure: 'Prenatal Care',
       rating: 5,
       text: 'Throughout my pregnancy, Dr. Kavya was incredibly supportive and knowledgeable. She made me feel confident and comfortable during every visit.',
-      location: 'Pune'
+      location: 'Kundapura'
     },
     {
-      name: 'Meera Reddy',
+      name: 'Meera R.',
       procedure: 'Gynecological Care',
       rating: 5,
       text: 'Dr. Kavya is not just an excellent doctor but also a compassionate human being. She takes time to explain everything and addresses all concerns patiently.',
-      location: 'Hyderabad'
+      location: 'Mangalore'
     },
     {
-      name: 'Sunita Gupta',
+      name: 'Sunita G.',
       procedure: 'Fertility Treatment',
       rating: 5,
       text: 'After years of trying, Dr. Kavya helped us achieve our dream of parenthood. Her expertise in fertility treatment is remarkable, and we are forever grateful.',
-      location: 'Bangalore'
+      location: 'Udupi'
     }
   ];
 
