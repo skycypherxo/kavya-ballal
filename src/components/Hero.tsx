@@ -28,10 +28,8 @@ const Hero: React.FC = () => {
             </div>
             
             <div className="space-y-6">
-              <h1 className="text-heading-xl lg:text-display font-black text-gray-900 leading-tight">
-                Dr. Kavya 
-                <span className="block text-transparent bg-gradient-to-r from-blue-600 via-cyan-600 to-blue-800 bg-clip-text text-display">Ballal</span>
-              </h1>
+                <span className="block text-transparent bg-gradient-to-r from-pink-600 via-yellow-600 to-red-800 bg-clip-text text-display font-black">Dr. Kavya Ballal</span>
+              
               
               <div className="space-y-3">
                 <h2 className="text-heading-lg lg:text-heading-xl text-gray-700 font-bold">

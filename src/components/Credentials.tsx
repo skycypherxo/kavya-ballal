@@ -4,31 +4,32 @@ import { GraduationCap, Award, Building, Users, BookOpen, Palette, MapPin, Micro
 const Credentials: React.FC = () => {
   const education = [
     {
-      degree: 'Fellowship in Minimal Access Surgery',
-      institution: 'R.K. School of Endoskills',
+      degree: 'MBBS',
+      institution: 'Srinivas Institute of Medical Sciences, Mangalore',
       year: '2020',
-      specialization: 'Advanced laparoscopic and hysteroscopic surgical techniques',
-      color: 'teal'
+      specialization: 'Bachelor of Medicine, Bachelor of Surgery - Undergraduate medical education',
+      color: 'purple'
     },
     {
-      degree: 'MS in Obstetrics & Gynecology', 
+      degree: 'M.S.OBG', 
       institution: 'A.J. Institute of Medical Sciences, Mangalore',
-      year: '2019',
-      specialization: 'High-risk obstetrics, gynecologic surgery, and reproductive health',
+      year: '2024',
+      specialization: 'Master of Surgery in Obstetrics & Gynecology - High-risk obstetrics, gynecologic surgery, and reproductive health',
       color: 'blue'
     },
     {
-      degree: 'Bachelor of Medicine (MBBS)',
-      institution: 'Medical College',
-      year: '2017',
-      specialization: 'General Medicine and Surgery',
-      color: 'purple'
+      degree: 'F.M.A.S',
+      institution: 'R.K. School of Endoskills',
+      year: '2025',
+      specialization: 'Fellowship in Minimal Access Surgery - Advanced laparoscopic and hysteroscopic surgical techniques',
+      color: 'teal'
     }
   ];
 
   const certifications = [
-    'MS in Obstetrics & Gynecology',
-    'Fellowship in Minimal Access Surgery',
+    'M.S.OBG - Obstetrics & Gynecology (2024)',
+    'F.M.A.S - Fellowship in Minimal Access Surgery (2025)',
+    'MBBS - Bachelor of Medicine, Bachelor of Surgery (2020)',
     'Advanced Laparoscopic Surgery Certification',
     'Hysteroscopic Surgery Specialist',
     'High-Risk Pregnancy Management'
@@ -90,47 +91,82 @@ const Credentials: React.FC = () => {
           </p>
         </div>
 
-        {/* Education Timeline */}
+        {/* Medical Education Timeline */}
         <div className="mb-20">
-          <div className="flex items-center mb-8">
-            <GraduationCap className="text-blue-600 mr-3" size={28} />
-            <h3 className="text-3xl font-bold font-display text-gray-900">Medical Education</h3>
+          <div className="text-center mb-12">
+            <h3 className="text-3xl font-bold font-display text-gray-900 mb-4 flex items-center justify-center">
+              <GraduationCap className="text-blue-600 mr-3" size={32} />
+              Medical Education Timeline
+            </h3>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              A comprehensive journey through medical education at premier institutions, 
+              building expertise in obstetrics, gynecology, and minimally invasive surgery.
+            </p>
           </div>
-          <div className="space-y-8">
-            {education.map((edu, index) => (
-              <div key={index} className="relative">
-                <div className="flex items-start space-x-6">
-                  <div className={`flex-shrink-0 w-4 h-4 rounded-full mt-2 ${
-                    edu.color === 'blue' ? 'bg-blue-600' :
-                    edu.color === 'teal' ? 'bg-teal-600' :
-                    'bg-purple-600'
-                  }`}></div>
-                  <div className="bg-gray-50 rounded-2xl p-8 flex-1 hover-lift">
-                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-4">
-                      <h4 className="text-xl font-semibold text-gray-900">
-                        {edu.degree}
-                      </h4>
-                      <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
-                        edu.color === 'blue' ? 'bg-blue-100 text-blue-800' :
-                        edu.color === 'teal' ? 'bg-teal-100 text-teal-800' :
-                        'bg-purple-100 text-purple-800'
+          
+          <div className="relative">
+            {/* Timeline line */}
+            <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-purple-500 via-blue-500 to-teal-500"></div>
+            
+            <div className="space-y-12">
+              {education.map((edu, index) => (
+                <div key={index} className="relative flex items-start">
+                  {/* Timeline dot */}
+                  <div className={`flex-shrink-0 w-16 h-16 rounded-full border-4 border-white shadow-lg flex items-center justify-center z-10 ${
+                    edu.color === 'purple' ? 'bg-gradient-to-br from-purple-500 to-purple-600' :
+                    edu.color === 'blue' ? 'bg-gradient-to-br from-blue-500 to-blue-600' :
+                    'bg-gradient-to-br from-teal-500 to-teal-600'
+                  }`}>
+                    <span className="text-white font-bold text-lg">
+                      {edu.degree === 'MBBS' ? 'MB' : 
+                       edu.degree === 'M.S.OBG' ? 'MS' : 'FM'}
+                    </span>
+                  </div>
+                  
+                  {/* Content card */}
+                  <div className="ml-8 flex-1">
+                    <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
+                      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-4">
+                        <h4 className="text-2xl font-bold text-gray-900 mb-2 lg:mb-0">
+                          {edu.degree}
+                        </h4>
+                        <span className={`inline-block px-4 py-2 rounded-full text-lg font-bold ${
+                          edu.color === 'purple' ? 'bg-purple-100 text-purple-800' :
+                          edu.color === 'blue' ? 'bg-blue-100 text-blue-800' :
+                          'bg-teal-100 text-teal-800'
+                        }`}>
+                          {edu.year}
+                        </span>
+                      </div>
+                      
+                      <h5 className={`text-xl font-semibold mb-3 ${
+                        edu.color === 'purple' ? 'text-purple-600' :
+                        edu.color === 'blue' ? 'text-blue-600' :
+                        'text-teal-600'
                       }`}>
-                        {edu.year}
-                      </span>
+                        {edu.institution}
+                      </h5>
+                      
+                      <p className="text-gray-700 leading-relaxed">
+                        {edu.specialization}
+                      </p>
+                      
+                      {/* Progress indicator */}
+                      <div className="mt-4 flex items-center">
+                        <div className={`w-2 h-2 rounded-full mr-2 ${
+                          edu.color === 'purple' ? 'bg-purple-500' :
+                          edu.color === 'blue' ? 'bg-blue-500' :
+                          'bg-teal-500'
+                        }`}></div>
+                        <span className="text-sm text-gray-500 font-medium">
+                          {index === 0 ? 'Foundation' : index === 1 ? 'Specialization' : 'Advanced Fellowship'}
+                        </span>
+                      </div>
                     </div>
-                    <p className="text-blue-600 font-medium mb-2">
-                      {edu.institution}
-                    </p>
-                    <p className="text-gray-600">
-                      {edu.specialization}
-                    </p>
                   </div>
                 </div>
-                {index < education.length - 1 && (
-                  <div className="absolute left-2 top-8 w-0.5 h-16 bg-gray-200"></div>
-                )}
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
 
