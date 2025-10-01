@@ -253,20 +253,25 @@ const About: React.FC = () => {
                   Your browser does not support the video tag.
                 </video>
               </div>
-              <div className="relative group">
-                <video
-                  controls
-                  className="w-full h-auto rounded-2xl shadow-2xl object-cover border-2 border-dashed border-blue-300 group-hover:scale-105 transition-transform duration-500"
-                  style={{ aspectRatio: '16/9', maxHeight: '400px' }}
-                  
-                >
-                  <source src="/Talk.mp4" type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
+              <div className="relative group mb-8">
+                <h4 className="text-2xl font-bold text-center text-blue-700 mb-4">Talk on PCOS</h4>
+                <div className="flex justify-center">
+                  <iframe
+                    width="560"
+                    height="315"
+                    src="https://www.youtube.com/embed/78HuyJEMKAA?si=BPzuT4k4Hdvt4UvX"
+                    title="YouTube video player"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                    allowFullScreen
+                    className="rounded-2xl border-2 border-dashed border-blue-300 shadow-2xl"
+                  ></iframe>
+                </div>
               </div>
                 {/* Testimonials Section */}
                 <div className="mt-12">
-                  <h4 className="text-3xl font-bold text-center text-blue-700 mb-8">Testimonials</h4>
+                  <h4 className="text-3xl font-bold text-center text-blue-700 mb-8">Video Testimonials</h4>
                     <div className="overflow-hidden w-full">
                       <div
                         className="flex space-x-8 animate-scroll-x"
