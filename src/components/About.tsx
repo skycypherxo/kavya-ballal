@@ -242,7 +242,7 @@ const About: React.FC = () => {
             </div>
             
             <div className="max-w-4xl mx-auto mb-8">
-              <div className="relative group">
+              <div className="relative group mb-8">
                 <video
                   controls
                   className="w-full h-auto rounded-2xl shadow-2xl object-cover border-2 border-dashed border-blue-300 group-hover:scale-105 transition-transform duration-500"
@@ -253,6 +253,54 @@ const About: React.FC = () => {
                   Your browser does not support the video tag.
                 </video>
               </div>
+              <div className="relative group">
+                <video
+                  controls
+                  className="w-full h-auto rounded-2xl shadow-2xl object-cover border-2 border-dashed border-blue-300 group-hover:scale-105 transition-transform duration-500"
+                  style={{ aspectRatio: '16/9', maxHeight: '400px' }}
+                  
+                >
+                  <source src="/Talk.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+                {/* Testimonials Section */}
+                <div className="mt-12">
+                  <h4 className="text-3xl font-bold text-center text-blue-700 mb-8">Testimonials</h4>
+                    <div className="overflow-hidden w-full">
+                      <div
+                        className="flex space-x-8 animate-scroll-x"
+                        style={{
+                          minWidth: 'max-content',
+                          animation: 'scroll-x 40s linear infinite'
+                        }}
+                      >
+                        <div className="bg-white/80 p-6 min-w-[350px] max-w-sm rounded-2xl shadow border border-blue-100 flex-shrink-0">
+                          <div className="text-lg font-bold text-blue-900 mb-2">Dr. Satish Shetty</div>
+                          <blockquote className="text-gray-800 italic">“Amazing talk! A complex topic you made so simple to understand. I am sure all their doubts would be cleared. What impressed me was your level of confidence—you spoke like a professional, with no signs of nervousness. The icing on the cake was the small smile on your face throughout the discussion. Congratulations, may God bless you with lots of success in all your future endeavors.”</blockquote>
+                        </div>
+                        <div className="bg-white/80 p-6 min-w-[350px] max-w-sm rounded-2xl shadow border border-blue-100 flex-shrink-0">
+                          <div className="text-lg font-bold text-blue-900 mb-2">Dr. Amritha</div>
+                          <blockquote className="text-gray-800 italic">“Good morning dear Kavya, you have clarified the myths and differences between PCOS & PCOD, and explained the appropriate management of the same in Kannada very nicely 👏🏻👏🏻👏🏻. Your calm nature and patience in explaining will surely win the confidence of your patients. All the best 💐 for your future endeavors 🤗.”</blockquote>
+                        </div>
+                        <div className="bg-white/80 p-6 min-w-[350px] max-w-sm rounded-2xl shadow border border-blue-100 flex-shrink-0">
+                          <div className="text-lg font-bold text-blue-900 mb-2">Dr. Nishita Shettian</div>
+                          <blockquote className="text-gray-800 italic">“Good morning Kavya ❤️❤️. Thank you so much for your kind words. I am truly delighted to hear about your public awareness talk on PCOS being featured on U Channel! It’s a wonderful achievement and a testament to your dedication to health education. I’m proud to have played a part in your journey, and it’s inspiring to see how you are using your knowledge and skills to make a difference in the community. Keep up the fantastic work! Love and prayers always ❤️❤️❤️.”</blockquote>
+                        </div>
+                        <div className="bg-white/80 p-6 min-w-[350px] max-w-sm rounded-2xl shadow border border-blue-100 flex-shrink-0">
+                          <div className="text-lg font-bold text-blue-900 mb-2">Mani Ajja</div>
+                          <blockquote className="text-gray-800 italic">“Glad to know. Gone through it—very well narrated and explained in a way that even laypeople can understand. I truly appreciate the great effort. Wishing you many more CME programs ahead 👍💐. Have a good day.”</blockquote>
+                        </div>
+                      </div>
+                    </div>
+                  {/* Add keyframes for scroll-x animation */}
+                  <style>{`
+                    @keyframes scroll-x {
+                      0% { transform: translateX(0); }
+                      100% { transform: translateX(-50%); }
+                    }
+                  `}</style>
+                </div>
             </div>
             
             <blockquote className="text-2xl font-display text-gray-800 italic leading-relaxed max-w-4xl mx-auto mb-6">

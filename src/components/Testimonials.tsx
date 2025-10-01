@@ -4,31 +4,38 @@ import { Star, Quote } from 'lucide-react';
 const Testimonials: React.FC = () => {
   const testimonials = [
     {
-      name: 'Priya S.',
-      procedure: 'Laparoscopic Surgery',
+      name: 'Mrs. Vani',
+      procedure: 'Normal Delivery',
       rating: 5,
-      text: 'Dr. Kavya performed my laparoscopic surgery with such precision and care. The recovery was much faster than I expected, and her follow-up care was exceptional.',
+      text: 'Dr. Kavya Ballal made my delivery journey smooth and stress-free. She is caring, approachable and highly skilled. Forever grateful for her support.',
       location: 'Udupi'
     },
     {
-      name: 'Anjali P.',
-      procedure: 'Prenatal Care',
+      name: 'Mrs. Sumati',
+      procedure: 'Pregnancy Care',
       rating: 5,
-      text: 'Throughout my pregnancy, Dr. Kavya was incredibly supportive and knowledgeable. She made me feel confident and comfortable during every visit.',
+      text: 'Wonderful experience with Dr. Kavya Ballal. She guided me throughout pregnancy with patience and ensured a safe delivery. Truly compassionate doctor.',
       location: 'Kundapura'
     },
     {
-      name: 'Meera R.',
-      procedure: 'Gynecological Care',
+      name: 'Veena Shet',
+      procedure: 'LSCS (C-Section)',
       rating: 5,
-      text: 'Dr. Kavya is not just an excellent doctor but also a compassionate human being. She takes time to explain everything and addresses all concerns patiently.',
+      text: 'I had to undergo an LSCS and Dr. Kavya Ballal made me feel safe throughout. Her surgical skills and gentle approach gave me complete confidence.',
       location: 'Mangalore'
     },
     {
-      name: 'Sunita G.',
-      procedure: 'Fertility Treatment',
+      name: 'Reshma',
+      procedure: 'Delivery',
       rating: 5,
-      text: 'After years of trying, Dr. Kavya helped us achieve our dream of parenthood. Her expertise in fertility treatment is remarkable, and we are forever grateful.',
+      text: 'From start to finish, Dr. Kavya Ballal was like a pillar of strength. My delivery was safe and smooth thanks to her guidance and kindness.',
+      location: 'Manipal'
+    },
+    {
+      name: 'Nayana S',
+      procedure: 'Normal Delivery',
+      rating: 5,
+      text: 'Amazing doctor! Dr. Kavya Ballal patiently explained everything, answered my doubts, and was with me throughout my delivery. Couldn’t have asked for better care.',
       location: 'Udupi'
     }
   ];

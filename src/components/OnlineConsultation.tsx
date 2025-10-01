@@ -12,9 +12,13 @@ const OnlineConsultation: React.FC = () => {
     email: '',
     phone: '',
     age: '',
+    sex: '',
+    address: '',
     concern: '',
     previousConsultation: 'no'
   });
+  const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const timeSlots = [
     { time: '09:00 AM', available: true },
@@ -60,6 +64,47 @@ const OnlineConsultation: React.FC = () => {
     }
   ];
 
+  // Helper to send booking email
+  const sendBookingEmail = async (bookingData: any) => {
+    try {
+      console.log('Sending email with data:', bookingData);
+      
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-booking-email`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify({
+            booking: bookingData,
+            type: 'new_booking'
+          })
+        }
+      );
+
+      const responseText = await response.text();
+      console.log('Email response status:', response.status);
+      console.log('Email response:', responseText);
+
+      if (!response.ok) {
+        throw new Error(`Email service error: ${response.status} - ${responseText}`);
+      }
+
+      const result = JSON.parse(responseText);
+      
+      if (result.success) {
+        return { success: true };
+      } else {
+        throw new Error(result.error || 'Unknown email error');
+      }
+    } catch (error) {
+      console.error('Email sending error:', error);
+      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+    }
+  };
+
   const handleBookingSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -68,144 +113,76 @@ const OnlineConsultation: React.FC = () => {
       return;
     }
 
-    // Test Supabase connection first
-    console.log('Testing Supabase connection...');
-    console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL);
-    console.log('Supabase Key exists:', !!import.meta.env.VITE_SUPABASE_ANON_KEY);
-    
-    try {
-      // Test basic connection
-      const { data: connectionTest, error: connectionError } = await supabase
-        .from('bookings')
-        .select('id')
-        .limit(0);
-      
-      console.log('Connection test result:', { connectionTest, connectionError });
-      
-      if (connectionError) {
-        console.error('Connection failed:', connectionError);
-        // Still try to proceed with the insert
-      }
-    } catch (testErr) {
-      console.error('Connection test failed:', testErr);
+    if (isSubmitting) {
+      return; // Prevent double submission
     }
 
+    setIsSubmitting(true);
+
     try {
-      // Try direct Supabase insert first (most reliable)
+      // Prepare booking data
+      const bookingData = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        age: parseInt(formData.age),
+        sex: formData.sex,
+        address: formData.address,
+        concern: formData.concern,
+        previous_consultation: formData.previousConsultation === 'yes',
+        consultation_type: consultationType,
+        appointment_date: selectedDate.toISOString().split('T')[0],
+        appointment_time: selectedTime,
+        status: 'pending',
+        payment_screenshot: paymentScreenshot ? paymentScreenshot.name : null
+      };
+
+      console.log('Inserting booking into database...');
+      
+      // Insert into Supabase
       const { data, error } = await supabase
         .from('bookings')
-        .insert([
-          {
-            name: formData.name,
-            email: formData.email,
-            phone: formData.phone,
-            age: parseInt(formData.age),
-            concern: formData.concern,
-            previous_consultation: formData.previousConsultation === 'yes',
-            consultation_type: consultationType,
-            appointment_date: selectedDate.toISOString().split('T')[0],
-            appointment_time: selectedTime,
-            status: 'pending'
-          }
-        ])
+        .insert([bookingData])
         .select();
 
       if (error) {
-        console.error('Direct insert error:', error);
-        console.log('Error details:', {
-          message: error.message,
-          details: error.details,
-          hint: error.hint,
-          code: error.code
-        });
-        
-        // If it's an RLS policy error (42501), skip Edge Function and go to demo mode
-        if (error.code === '42501' || error.message?.includes('row-level security')) {
-          console.log('RLS policy error detected. Database permissions need to be configured.');
-          console.log('Proceeding to demo mode...');
-          
-          // Show demo mode success message
-          alert('Demo Mode: Your appointment request has been received! (Note: Database configuration needed for live bookings)');
-          
-          // Reset form
-          setSelectedDate(null);
-          setSelectedTime('');
-          setFormData({
-            name: '',
-            email: '',
-            phone: '',
-            age: '',
-            concern: '',
-            previousConsultation: 'no'
-          });
-          setConsultationType('video');
-          return;
-        }
-        
-        // Fallback to Edge Function for other errors
-        console.log('Attempting Edge Function fallback...');
-        const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/book-appointment`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-          },
-          body: JSON.stringify({
-            name: formData.name,
-            email: formData.email,
-            phone: formData.phone,
-            age: formData.age,
-            concern: formData.concern,
-            previousConsultation: formData.previousConsultation,
-            consultationType,
-            appointmentDate: selectedDate.toISOString().split('T')[0],
-            appointmentTime: selectedTime
-          })
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to book appointment via Edge Function');
-        }
-
-        const result = await response.json();
-        console.log('Edge Function success:', result);
-      } else {
-        console.log('Direct insert success:', data);
+        console.error('Database error:', error);
+        throw new Error(`Failed to save booking: ${error.message}`);
       }
 
-      // Success message and reset form
-      alert('🎉 Appointment booked successfully! You will receive a confirmation email shortly.');
-      
+      console.log('Booking saved successfully:', data);
+
+      // Send email notification
+      console.log('Sending email notification...');
+      const emailResult = await sendBookingEmail(bookingData);
+
+      if (emailResult.success) {
+        alert('🎉 Booking confirmed! Confirmation emails have been sent to you and Dr. Kavya.');
+      } else {
+        alert(`✅ Booking saved successfully! However, there was an issue sending the email: ${emailResult.error}\n\nYour booking is confirmed and Dr. Kavya will contact you soon.`);
+      }
+
       // Reset form
       setFormData({
         name: '',
         email: '',
         phone: '',
         age: '',
+        sex: '',
+        address: '',
         concern: '',
         previousConsultation: 'no'
       });
+      setPaymentScreenshot(null);
       setSelectedDate(null);
       setSelectedTime('');
+      setConsultationType('video');
       
-    } catch (error: any) {
-      console.error('All booking methods failed:', error);
-      
-      // Show more specific error message
-      const errorMessage = error?.message || 'Unknown error occurred';
-      alert(`❌ Booking failed: ${errorMessage}\n\n� Demo Mode: Your appointment request would normally be received! In a real application, you would receive a confirmation email shortly.`);
-      
-      // Reset form even in demo mode for better UX
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        age: '',
-        concern: '',
-        previousConsultation: 'no'
-      });
-      setSelectedDate(null);
-      setSelectedTime('');
+    } catch (error) {
+      console.error('Booking error:', error);
+      alert(`❌ Error: ${error instanceof Error ? error.message : 'Failed to book appointment. Please try again.'}`);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -314,19 +291,16 @@ const OnlineConsultation: React.FC = () => {
                   isSelected ? 'scale-105 -translate-y-2' : ''
                 }`}
               >
-                {/* Card Background */}
                 <div className={`relative p-6 rounded-2xl border-2 transition-all duration-300 ${
                   isSelected 
                     ? `border-transparent bg-gradient-to-br ${bgGradients[index]} shadow-xl` 
                     : 'border-gray-100 bg-white shadow-md hover:shadow-lg hover:border-gray-200'
                 }`}>
                   
-                  {/* Animated background gradient */}
                   {isSelected && (
                     <div className={`absolute inset-0 bg-gradient-to-br ${gradients[index]} opacity-5 rounded-2xl`}></div>
                   )}
                   
-                  {/* Top section with icon and checkmark */}
                   <div className="relative flex items-center justify-between mb-4">
                     <div className={`p-3 rounded-xl transition-all duration-300 ${
                       isSelected 
@@ -343,7 +317,6 @@ const OnlineConsultation: React.FC = () => {
                     )}
                   </div>
                   
-                  {/* Content */}
                   <div className="relative space-y-3">
                     <h3 className={`text-heading-md font-bold transition-colors duration-300 ${
                       isSelected ? 'text-gray-900' : 'text-gray-800 group-hover:text-gray-900'
@@ -357,7 +330,6 @@ const OnlineConsultation: React.FC = () => {
                       {type.description}
                     </p>
                     
-                    {/* Pricing section */}
                     <div className="pt-3 border-t border-gray-100 space-y-1">
                       <div className={`text-heading-md font-black transition-colors duration-300 ${
                         isSelected 
@@ -374,12 +346,10 @@ const OnlineConsultation: React.FC = () => {
                     </div>
                   </div>
                   
-                  {/* Selection indicator */}
                   {isSelected && (
                     <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${gradients[index]} rounded-b-2xl`}></div>
                   )}
                   
-                  {/* Hover glow effect */}
                   <div className={`absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity duration-300 bg-gradient-to-br ${gradients[index]} pointer-events-none`}></div>
                 </div>
               </div>
@@ -389,7 +359,6 @@ const OnlineConsultation: React.FC = () => {
 
         {/* Booking Form */}
         <div className="relative overflow-hidden">
-          {/* Decorative background elements */}
           <div className="absolute top-0 right-0 w-72 h-72 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse" style={{animationDelay: '2s'}}></div>
           
@@ -441,6 +410,36 @@ const OnlineConsultation: React.FC = () => {
                 </div>
                 <div>
                   <label className="block text-body font-medium text-gray-700 mb-2">
+                    Sex *
+                  </label>
+                  <select
+                    name="sex"
+                    value={formData.sex}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-body"
+                  >
+                    <option value="">Select</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-body font-medium text-gray-700 mb-2">
+                    Address *
+                  </label>
+                  <input
+                    type="text"
+                    name="address"
+                    value={formData.address}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-body"
+                  />
+                </div>
+                <div>
+                  <label className="block text-body font-medium text-gray-700 mb-2">
                     Email Address *
                   </label>
                   <input
@@ -464,6 +463,21 @@ const OnlineConsultation: React.FC = () => {
                     required
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-body"
                   />
+                </div>
+                <div>
+                  <label className="block text-body font-medium text-gray-700 mb-2">
+                    Payment Confirmation (Upload Screenshot) *
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={e => setPaymentScreenshot(e.target.files?.[0] || null)}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-body"
+                  />
+                  {paymentScreenshot && (
+                    <div className="mt-2 text-body-sm text-gray-600">Selected: {paymentScreenshot.name}</div>
+                  )}
                 </div>
               </div>
             </div>
@@ -529,12 +543,10 @@ const OnlineConsultation: React.FC = () => {
                             )}
                           </div>
                           
-                          {/* Animated background for selected state */}
                           {selectedTime === slot.time && (
                             <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-indigo-500 opacity-20 animate-pulse"></div>
                           )}
                           
-                          {/* Hover gradient effect */}
                           {slot.available && selectedTime !== slot.time && (
                             <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-600 opacity-0 group-hover:opacity-5 transition-opacity duration-300"></div>
                           )}
@@ -609,27 +621,24 @@ const OnlineConsultation: React.FC = () => {
               <div className="relative inline-block">
                 <button
                   type="submit"
-                  className="group relative inline-flex items-center justify-center px-12 py-5 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-bold rounded-2xl transform transition-all duration-300 hover:scale-105 hover:shadow-2xl text-body-lg overflow-hidden"
+                  disabled={isSubmitting}
+                  className="group relative inline-flex items-center justify-center px-12 py-5 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-bold rounded-2xl transform transition-all duration-300 hover:scale-105 hover:shadow-2xl text-body-lg overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {/* Animated background gradient */}
                   <div className="absolute inset-0 bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   
-                  {/* Button content */}
                   <div className="relative flex items-center">
                     <div className="mr-3 p-2 bg-white/20 rounded-lg group-hover:bg-white/30 transition-colors duration-300">
                       <Send size={20} className="group-hover:rotate-12 transition-transform duration-300" />
                     </div>
                     <span className="relative">
-                      Book Consultation Now
+                      {isSubmitting ? 'Booking...' : 'Book Consultation Now'}
                       <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white group-hover:w-full transition-all duration-500"></div>
                     </span>
                   </div>
                   
-                  {/* Shine effect */}
                   <div className="absolute inset-0 -top-1 -bottom-1 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                 </button>
                 
-                {/* Floating decoration */}
                 <div className="absolute -top-2 -right-2 w-4 h-4 bg-yellow-400 rounded-full animate-bounce opacity-80"></div>
                 <div className="absolute -bottom-2 -left-2 w-3 h-3 bg-green-400 rounded-full animate-pulse opacity-60"></div>
               </div>
