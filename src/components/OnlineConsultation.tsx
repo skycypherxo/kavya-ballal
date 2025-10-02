@@ -5,7 +5,7 @@ import { supabase } from '../lib/supabase';
 const OnlineConsultation: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState('');
-  const [consultationType, setConsultationType] = useState('video');
+  const [consultationType, setConsultationType] = useState('');
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [formData, setFormData] = useState({
     name: '',
@@ -37,32 +37,7 @@ const OnlineConsultation: React.FC = () => {
     { time: '05:30 PM', available: true }
   ];
 
-  const consultationTypes = [
-    {
-      id: 'video',
-      icon: Video,
-      title: 'Video Consultation',
-      description: 'Face-to-face consultation via secure video call',
-      price: '₹800',
-      duration: '30 minutes'
-    },
-    {
-      id: 'phone',
-      icon: Phone,
-      title: 'Phone Consultation',
-      description: 'Professional consultation over phone call',
-      price: '₹600',
-      duration: '20 minutes'
-    },
-    {
-      id: 'chat',
-      icon: MessageCircle,
-      title: 'Chat Consultation',
-      description: 'Text-based consultation with detailed responses',
-      price: '₹400',
-      duration: 'Within 24 hours'
-    }
-  ];
+  // Removed consultation cards, using dropdown instead
 
   // Helper to send booking email
   const sendBookingEmail = async (bookingData: any) => {
@@ -105,86 +80,83 @@ const OnlineConsultation: React.FC = () => {
     }
   };
 
-  const handleBookingSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!selectedDate || !selectedTime) {
-      alert('Please select both date and time for your consultation.');
-      return;
-    }
+  // ...existing code...
+const handleBookingSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!selectedDate || !selectedTime) {
+    alert('Please select both date and time for your consultation.');
+    return;
+  }
+  if (isSubmitting) return;
+  setIsSubmitting(true);
 
-    if (isSubmitting) {
-      return; // Prevent double submission
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      // Prepare booking data
-      const bookingData = {
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        age: parseInt(formData.age),
-        sex: formData.sex,
-        address: formData.address,
-        concern: formData.concern,
-        previous_consultation: formData.previousConsultation === 'yes',
-        consultation_type: consultationType,
-        appointment_date: selectedDate.toISOString().split('T')[0],
-        appointment_time: selectedTime,
-        status: 'pending',
-        payment_screenshot: paymentScreenshot ? paymentScreenshot.name : null
-      };
-
-      console.log('Inserting booking into database...');
+  try {
+    // Upload payment screenshot to Supabase Storage
+    let paymentScreenshotUrl = '';
+    if (paymentScreenshot) {
+      console.log('📤 Uploading payment screenshot:', paymentScreenshot.name);
       
-      // Insert into Supabase
-      const { data, error } = await supabase
-        .from('bookings')
-        .insert([bookingData])
-        .select();
-
+      const fileExt = paymentScreenshot.name.split('.').pop();
+      const fileName = `${formData.name.replace(/\s+/g, '_')}_${Date.now()}.${fileExt}`;
+      
+      const { data, error } = await supabase.storage
+        .from('receipts')
+        .upload(fileName, paymentScreenshot, { upsert: true });
+      
       if (error) {
-        console.error('Database error:', error);
-        throw new Error(`Failed to save booking: ${error.message}`);
-      }
-
-      console.log('Booking saved successfully:', data);
-
-      // Send email notification
-      console.log('Sending email notification...');
-      const emailResult = await sendBookingEmail(bookingData);
-
-      if (emailResult.success) {
-        alert('🎉 Booking confirmed! Confirmation emails have been sent to you and Dr. Kavya.');
+        console.error('❌ Upload error:', error);
+        alert(`⚠️ Warning: Payment receipt upload failed (${error.message}). Your booking will still be saved, but please send the receipt manually to Dr. Kavya.`);
       } else {
-        alert(`✅ Booking saved successfully! However, there was an issue sending the email: ${emailResult.error}\n\nYour booking is confirmed and Dr. Kavya will contact you soon.`);
+        console.log('✅ Upload successful:', data);
+        paymentScreenshotUrl = supabase.storage
+          .from('receipts')
+          .getPublicUrl(fileName).data.publicUrl;
+        console.log('🔗 Image URL:', paymentScreenshotUrl);
       }
-
-      // Reset form
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        age: '',
-        sex: '',
-        address: '',
-        concern: '',
-        previousConsultation: 'no'
-      });
-      setPaymentScreenshot(null);
-      setSelectedDate(null);
-      setSelectedTime('');
-      setConsultationType('video');
-      
-    } catch (error) {
-      console.error('Booking error:', error);
-      alert(`❌ Error: ${error instanceof Error ? error.message : 'Failed to book appointment. Please try again.'}`);
-    } finally {
-      setIsSubmitting(false);
     }
-  };
+
+    // Prepare booking data
+    const bookingData = {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      age: parseInt(formData.age),
+      sex: formData.sex,
+      address: formData.address,
+      concern: formData.concern,
+      previous_consultation: formData.previousConsultation === 'yes',
+      consultation_type: consultationType,
+      appointment_date: selectedDate.toISOString().split('T')[0],
+      appointment_time: selectedTime,
+      status: 'pending',
+      payment_screenshot_url: paymentScreenshotUrl
+    };
+
+    // Insert into Supabase
+    const { data, error } = await supabase
+      .from('bookings')
+      .insert([bookingData])
+      .select();
+
+    if (error) throw new Error(`Failed to save booking: ${error.message}`);
+
+    // Send email notification
+    const emailResult = await sendBookingEmail(bookingData);
+
+    if (emailResult.success) {
+      alert('🎉 Booking confirmed! Confirmation emails have been sent to you and Dr. Kavya.');
+    } else {
+      alert(`✅ Booking saved successfully! However, there was an issue sending the email: ${emailResult.error}\n\nYour booking is confirmed and Dr. Kavya will contact you soon.`);
+    }
+
+    // Reset form
+    // ...existing reset code...
+  } catch (error) {
+    alert(`❌ Error: ${error instanceof Error ? error.message : 'Failed to book appointment. Please try again.'}`);
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -265,96 +237,6 @@ const OnlineConsultation: React.FC = () => {
           <p className="text-body-xl text-gray-600 max-w-3xl mx-auto">
             Get professional medical advice from the comfort of your home. Choose your preferred consultation method and book an appointment that fits your schedule.
           </p>
-        </div>
-
-        {/* Consultation Types */}
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
-          {consultationTypes.map((type, index) => {
-            const IconComponent = type.icon;
-            const gradients = [
-              'from-blue-500 to-indigo-600',
-              'from-emerald-500 to-teal-600', 
-              'from-purple-500 to-pink-600'
-            ];
-            const bgGradients = [
-              'from-blue-50 to-indigo-50',
-              'from-emerald-50 to-teal-50',
-              'from-purple-50 to-pink-50'
-            ];
-            const isSelected = consultationType === type.id;
-            
-            return (
-              <div
-                key={type.id}
-                onClick={() => setConsultationType(type.id)}
-                className={`group relative overflow-hidden cursor-pointer transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 ${
-                  isSelected ? 'scale-105 -translate-y-2' : ''
-                }`}
-              >
-                <div className={`relative p-6 rounded-2xl border-2 transition-all duration-300 ${
-                  isSelected 
-                    ? `border-transparent bg-gradient-to-br ${bgGradients[index]} shadow-xl` 
-                    : 'border-gray-100 bg-white shadow-md hover:shadow-lg hover:border-gray-200'
-                }`}>
-                  
-                  {isSelected && (
-                    <div className={`absolute inset-0 bg-gradient-to-br ${gradients[index]} opacity-5 rounded-2xl`}></div>
-                  )}
-                  
-                  <div className="relative flex items-center justify-between mb-4">
-                    <div className={`p-3 rounded-xl transition-all duration-300 ${
-                      isSelected 
-                        ? `bg-gradient-to-br ${gradients[index]} text-white shadow-md` 
-                        : `bg-gradient-to-br ${gradients[index]} bg-opacity-10 text-gray-600 group-hover:bg-opacity-15`
-                    }`}>
-                      <IconComponent size={24} className={isSelected ? 'text-white' : `text-${gradients[index].split('-')[1]}-600`} />
-                    </div>
-                    
-                    {isSelected && (
-                      <div className={`p-1.5 rounded-full bg-gradient-to-br ${gradients[index]} text-white animate-pulse`}>
-                        <CheckCircle size={16} />
-                      </div>
-                    )}
-                  </div>
-                  
-                  <div className="relative space-y-3">
-                    <h3 className={`text-heading-md font-bold transition-colors duration-300 ${
-                      isSelected ? 'text-gray-900' : 'text-gray-800 group-hover:text-gray-900'
-                    }`}>
-                      {type.title}
-                    </h3>
-                    
-                    <p className={`text-body-sm leading-relaxed transition-colors duration-300 ${
-                      isSelected ? 'text-gray-700' : 'text-gray-600 group-hover:text-gray-700'
-                    }`}>
-                      {type.description}
-                    </p>
-                    
-                    <div className="pt-3 border-t border-gray-100 space-y-1">
-                      <div className={`text-heading-md font-black transition-colors duration-300 ${
-                        isSelected 
-                          ? `text-transparent bg-gradient-to-r ${gradients[index]} bg-clip-text` 
-                          : `text-gray-800 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:${gradients[index]} group-hover:bg-clip-text`
-                      }`}>
-                        {type.price}
-                      </div>
-                      <div className={`text-body-sm font-medium transition-colors duration-300 ${
-                        isSelected ? 'text-gray-600' : 'text-gray-500 group-hover:text-gray-600'
-                      }`}>
-                        {type.duration}
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {isSelected && (
-                    <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${gradients[index]} rounded-b-2xl`}></div>
-                  )}
-                  
-                  <div className={`absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity duration-300 bg-gradient-to-br ${gradients[index]} pointer-events-none`}></div>
-                </div>
-              </div>
-            );
-          })}
         </div>
 
         {/* Booking Form */}
@@ -463,6 +345,9 @@ const OnlineConsultation: React.FC = () => {
                     required
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-body"
                   />
+                  <div className="flex justify-center my-4">
+                    <img src="/QR.jpeg" alt="Scan QR to pay" className="w-96 h-96 object-contain rounded-xl border border-gray-200 shadow" />
+                  </div>
                 </div>
                 <div>
                   <label className="block text-body font-medium text-gray-700 mb-2">
@@ -478,6 +363,20 @@ const OnlineConsultation: React.FC = () => {
                   {paymentScreenshot && (
                     <div className="mt-2 text-body-sm text-gray-600">Selected: {paymentScreenshot.name}</div>
                   )}
+                </div>
+                <div>
+                  <label className="block text-body-lg font-semibold text-gray-900 mb-2">Consultation Type *</label>
+                  <select
+                    name="consultationType"
+                    value={consultationType}
+                    onChange={e => setConsultationType(e.target.value)}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-body"
+                  >
+                    <option value="">Select</option>
+                    <option value="text">₹400 for chat consultation</option>
+                    <option value="video">₹600 for video consultation</option>
+                  </select>
                 </div>
               </div>
             </div>

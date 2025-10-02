@@ -21,6 +21,7 @@ const BookingsAdmin: React.FC = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [actionLoading, setActionLoading] = useState(false);
 
   const fetchBookings = async () => {
     setLoading(true);
@@ -49,8 +50,54 @@ const BookingsAdmin: React.FC = () => {
 
   useEffect(() => {
     fetchBookings();
+    // Subscribe to realtime changes
+    const subscription = supabase
+      .channel('bookings-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, (payload) => {
+        fetchBookings();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(subscription);
+    };
   }, []);
 
+  // Approve booking
+  const handleApprove = async (bookingId: string) => {
+    try {
+      setActionLoading(true);
+      const { error } = await supabase
+        .from('bookings')
+        .update({ status: 'confirmed' })
+        .eq('id', bookingId);
+      if (error) throw error;
+      fetchBookings();
+      alert('✅ Booking confirmed successfully!');
+    } catch (err: any) {
+      alert('Failed to approve booking: ' + err.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  // Deny booking
+  const handleDeny = async (bookingId: string) => {
+    try {
+      setActionLoading(true);
+      const { error } = await supabase
+        .from('bookings')
+        .update({ status: 'cancelled' })
+        .eq('id', bookingId);
+      if (error) throw error;
+      fetchBookings();
+      alert('❌ Booking cancelled.');
+    } catch (err: any) {
+      alert('Failed to cancel booking: ' + err.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -231,6 +278,33 @@ const BookingsAdmin: React.FC = () => {
                     <p className="text-body-sm text-gray-500">
                       Booked: {formatDateTime(booking.created_at)}
                     </p>
+                    {booking.status === 'pending' && (
+                      <div className="flex gap-2 mt-2">
+                        <button
+                          onClick={() => handleApprove(booking.id)}
+                          disabled={actionLoading}
+                          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                        >
+                          Approve
+                        </button>
+                        <button
+                          onClick={() => handleDeny(booking.id)}
+                          disabled={actionLoading}
+                          className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                        >
+                          Deny
+                        </button>
+                      </div>
+                    )}
+                    {booking.status === 'confirmed' && (
+                      <div className="mt-2 text-green-700 font-semibold">✅ Approved</div>
+                    )}
+                    {booking.status === 'cancelled' && (
+                      <div className="mt-2 text-red-700 font-semibold">❌ Denied</div>
+                    )}
+                    {booking.status === 'completed' && (
+                      <div className="mt-2 text-blue-700 font-semibold">✓ Completed</div>
+                    )}
                   </div>
                 </div>
               ))}

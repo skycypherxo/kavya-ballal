@@ -1,16 +1,42 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Clock, User, Mail, Phone, MapPin, FileText, CheckCircle, XCircle, Clock3, Filter, Search, AlertCircle, Loader } from 'lucide-react';
+
+// Define Booking type
+interface Booking {
+  id: number;
+  name: string;
+  age: number;
+  sex: string;
+  appointment_date: string;
+  appointment_time: string;
+  email: string;
+  phone: string;
+  address: string;
+  consultation_type: string;
+  payment_screenshot?: string;
+  payment_screenshot_url?: string;
+  concern?: string;
+  status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
+  cancellation_reason?: string;
+  previous_consultation?: boolean;
+  created_at: string;
+}
+import { Calendar, Clock, User, Mail, Phone, MapPin, FileText, CheckCircle, XCircle, Clock3, Filter, Search, AlertCircle, Loader, Image, Download, Eye, X } from 'lucide-react';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const AdminCRM = () => {
-  const [bookings, setBookings] = useState([]);
-  const [filteredBookings, setFilteredBookings] = useState([]);
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [filteredBookings, setFilteredBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [statusFilter, setStatusFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
+  const [imageModal, setImageModal] = useState<{ isOpen: boolean; imageUrl: string; patientName: string }>({
+    isOpen: false,
+    imageUrl: '',
+    patientName: ''
+  });
 
   // Initialize Supabase client
   const supabase = createClient(
@@ -18,9 +44,26 @@ const AdminCRM = () => {
     import.meta.env.VITE_SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_KEY'
   );
 
-  // Fetch bookings from Supabase
+  // Fetch bookings from Supabase and subscribe to realtime changes
   useEffect(() => {
     fetchBookings();
+    // Subscribe to realtime changes
+    const subscription = supabase
+      .channel('bookings-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, (payload) => {
+        fetchBookings();
+      })
+      .subscribe();
+
+    // Periodic ping to keep Supabase connection alive
+    const pingInterval = setInterval(() => {
+      supabase.from('bookings').select('id').limit(1);
+    }, 240000); // every 4 minutes
+
+    return () => {
+      supabase.removeChannel(subscription);
+      clearInterval(pingInterval);
+    };
   }, []);
 
   const fetchBookings = async () => {
@@ -71,24 +114,45 @@ const AdminCRM = () => {
     try {
       setActionLoading(true);
 
-      const { error } = await supabase
-        .from('bookings')
-        .update({ status: 'confirmed' })
-        .eq('id', bookingId);
+      // Use edge function to update booking status with service role permissions
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/update-booking-status`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify({
+            bookingId: bookingId,
+            status: 'confirmed'
+          })
+        }
+      );
 
-      if (error) throw error;
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        console.error('Update booking error:', result.error);
+        alert('Failed to update booking status: ' + (result.error || 'Unknown error'));
+        return;
+      }
 
       // Send confirmation email
       const booking = bookings.find(b => b.id === bookingId);
-      await sendConfirmationEmail(booking, 'confirmed');
+      if (booking) {
+        await sendConfirmationEmail(booking, 'confirmed');
+      }
 
-      // Refresh bookings
+      // Refresh bookings to get updated data
       await fetchBookings();
+      setStatusFilter('confirmed');
       setSelectedBooking(null);
       alert('✅ Booking confirmed successfully! Confirmation email sent to patient.');
+      
     } catch (err) {
       console.error('Error approving booking:', err);
-      alert('Failed to approve booking: ' + err.message);
+      alert('Failed to approve booking: ' + (err as Error).message);
     } finally {
       setActionLoading(false);
     }
@@ -101,27 +165,45 @@ const AdminCRM = () => {
     try {
       setActionLoading(true);
 
-      const { error } = await supabase
-        .from('bookings')
-        .update({ 
-          status: 'cancelled',
-          cancellation_reason: reason || 'Cancelled by doctor'
-        })
-        .eq('id', bookingId);
+      // Use edge function to update booking status with service role permissions
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/update-booking-status`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify({
+            bookingId: bookingId,
+            status: 'cancelled',
+            cancellationReason: reason || 'Cancelled by doctor'
+          })
+        }
+      );
 
-      if (error) throw error;
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        console.error('Update booking error:', result.error);
+        alert('Failed to update booking status: ' + (result.error || 'Unknown error'));
+        return;
+      }
 
       // Send cancellation email
       const booking = bookings.find(b => b.id === bookingId);
-      await sendConfirmationEmail(booking, 'cancelled', reason);
+      if (booking) {
+        await sendConfirmationEmail(booking, 'cancelled', reason || '');
+      }
 
-      // Refresh bookings
+      // Refresh bookings to get updated data
       await fetchBookings();
+      setStatusFilter('cancelled');
       setSelectedBooking(null);
       alert('❌ Booking cancelled. Notification email sent to patient.');
     } catch (err) {
       console.error('Error denying booking:', err);
-      alert('Failed to cancel booking: ' + err.message);
+      alert('Failed to cancel booking: ' + String(err));
     } finally {
       setActionLoading(false);
     }
@@ -153,6 +235,42 @@ const AdminCRM = () => {
       }
     } catch (error) {
       console.error('Error sending email:', error);
+    }
+  };
+
+  // Handle image viewing
+  const openImageModal = (imageUrl: string, patientName: string) => {
+    setImageModal({
+      isOpen: true,
+      imageUrl,
+      patientName
+    });
+  };
+
+  const closeImageModal = () => {
+    setImageModal({
+      isOpen: false,
+      imageUrl: '',
+      patientName: ''
+    });
+  };
+
+  // Download image
+  const downloadImage = async (imageUrl: string, patientName: string) => {
+    try {
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${patientName}_payment_receipt.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading image:', error);
+      alert('Failed to download image');
     }
   };
 
@@ -406,6 +524,54 @@ const AdminCRM = () => {
                         </div>
                       </div>
 
+                      {/* Payment Receipt Section */}
+                      {(booking.payment_screenshot_url || booking.payment_screenshot) && (
+                        <div className="mt-3 p-3 bg-amber-50 border-l-4 border-amber-500 rounded">
+                          <div className="flex items-center justify-between mb-2">
+                            <p className="text-sm font-semibold text-amber-900">Payment Receipt:</p>
+                            <div className="flex gap-2">
+                              {booking.payment_screenshot_url && (
+                                <>
+                                  <button
+                                    onClick={() => openImageModal(booking.payment_screenshot_url!, booking.name)}
+                                    className="flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition text-xs"
+                                  >
+                                    <Eye size={12} />
+                                    View
+                                  </button>
+                                  <button
+                                    onClick={() => downloadImage(booking.payment_screenshot_url!, booking.name)}
+                                    className="flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 rounded hover:bg-green-200 transition text-xs"
+                                  >
+                                    <Download size={12} />
+                                    Download
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                          </div>
+                          {booking.payment_screenshot_url ? (
+                            <div className="relative">
+                              <img
+                                src={booking.payment_screenshot_url}
+                                alt={`Payment receipt from ${booking.name}`}
+                                className="w-full max-w-xs rounded border cursor-pointer hover:opacity-90 transition"
+                                onClick={() => openImageModal(booking.payment_screenshot_url!, booking.name)}
+                                onError={(e) => {
+                                  console.error('Image load error:', e);
+                                  e.currentTarget.style.display = 'none';
+                                }}
+                              />
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-2 text-gray-700">
+                              <Image size={16} className="text-orange-600" />
+                              <span className="text-sm">Receipt: {booking.payment_screenshot}</span>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
                       {booking.concern && (
                         <div className="mt-3 p-3 bg-blue-50 border-l-4 border-blue-500 rounded">
                           <p className="text-sm font-semibold text-blue-900 mb-1">Chief Concern:</p>
@@ -469,6 +635,48 @@ const AdminCRM = () => {
           </div>
         )}
       </div>
+
+      {/* Image Modal */}
+      {imageModal.isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+          <div className="relative max-w-4xl max-h-full bg-white rounded-lg overflow-hidden">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-4 border-b">
+              <h3 className="text-lg font-semibold text-gray-900">
+                Payment Receipt - {imageModal.patientName}
+              </h3>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => downloadImage(imageModal.imageUrl, imageModal.patientName)}
+                  className="flex items-center gap-2 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-sm"
+                >
+                  <Download size={16} />
+                  Download
+                </button>
+                <button
+                  onClick={closeImageModal}
+                  className="p-2 hover:bg-gray-100 rounded transition"
+                >
+                  <X size={20} className="text-gray-600" />
+                </button>
+              </div>
+            </div>
+            
+            {/* Modal Content */}
+            <div className="p-4">
+              <img
+                src={imageModal.imageUrl}
+                alt={`Payment receipt from ${imageModal.patientName}`}
+                className="max-w-full max-h-[70vh] object-contain mx-auto rounded"
+                onError={(e) => {
+                  console.error('Modal image load error:', e);
+                  e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIxIDMuNUgzQzIuNiAzLjUgMi4yNSAzLjY1IDIgNFY4SDE0VjZIMjBWMThIMTRWMTZIMlYyMEMyIDIwLjM1IDIuMzUgMjAuNSAzIDIwLjVIMjFDMjEuNjUgMjAuNSAyMiAyMC4xNSAyMiAyMFY0QzIyIDMuMzUgMjEuNjUgMy41IDIxIDMuNVoiIGZpbGw9IiM5Q0EzQUYiLz4KPC9zdmc+';
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

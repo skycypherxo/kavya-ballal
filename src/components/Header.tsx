@@ -75,13 +75,7 @@ const Header: React.FC = () => {
           </nav>
 
           <div className="hidden lg:flex items-center space-x-4">
-            <a 
-              href="tel:+918296048243" 
-              className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 transition-colors group"
-            >
-              <Phone size={16} className="group-hover:scale-110 transition-transform" />
-              <span className="text-sm font-medium">8296048243</span>
-            </a>
+            {/* Phone number removed as requested */}
             <button
               onClick={() => scrollToSection('consultation')}
               className="bg-gradient-to-r from-blue-600 to-teal-600 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center space-x-2"
@@ -133,10 +127,7 @@ const Header: React.FC = () => {
                 Contact
               </button>
               <div className="flex flex-col space-y-3 pt-4 border-t border-gray-200">
-                <a href="tel:+918296048243" className="flex items-center space-x-2 text-blue-600">
-                  <Phone size={16} />
-                  <span className="font-medium">8296048243</span>
-                </a>
+                {/* Phone number removed as requested */}
                 <a href="mailto:kavyabhat23895@gmail.com" className="flex items-center space-x-2 text-blue-600">
                   <Mail size={16} />
                   <span className="font-medium">Email</span>
