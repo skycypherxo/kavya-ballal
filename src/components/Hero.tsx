@@ -111,7 +111,7 @@ const Hero: React.FC = () => {
               {/* Professional floating stats - compact and elegant */}
               <div className="absolute -top-3 -right-3 bg-white/95 backdrop-blur-sm p-3 rounded-xl shadow-md border border-blue-100 animate-float">
                 <div className="text-center">
-                  <div className="text-lg font-bold text-blue-600">5+</div>
+                  <div className="text-lg font-bold text-blue-600">4+</div>
                   <div className="text-xs text-gray-600 font-medium">Years</div>
                 </div>
               </div>

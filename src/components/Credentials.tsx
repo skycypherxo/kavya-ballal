@@ -265,7 +265,7 @@ const Credentials: React.FC = () => {
         <div className="mt-20 bg-gradient-to-r from-blue-600 to-teal-600 rounded-3xl p-12 text-white text-center">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <div className="text-3xl font-bold mb-2">5+</div>
+              <div className="text-3xl font-bold mb-2">4</div>
               <div className="text-blue-100">Years Experience</div>
             </div>
             <div>

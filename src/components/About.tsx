@@ -113,7 +113,7 @@ const About: React.FC = () => {
             <div className="space-y-6 text-gray-700 leading-relaxed">
               <p className="text-body-xl font-medium">
                 Dr. Kavya Ballal is a practicing <span className="font-bold text-blue-600">Obstetrician and Gynecologist</span> based in Udupi, Karnataka, 
-                with over <span className="font-bold text-heading-sm text-blue-700">five years</span> of clinical experience. She currently serves at the Government Hospital 
+                with over <span className="font-bold text-heading-sm text-blue-700">4 years</span> of clinical experience. She currently serves at the Government Hospital 
                 in Kundapura and consults at her private practice — <span className="font-bold">Ballal's Healthcare</span> in Santhekatte.
               </p>
               <p className="text-body-lg">

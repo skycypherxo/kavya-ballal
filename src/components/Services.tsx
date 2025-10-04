@@ -72,8 +72,8 @@ const Services: React.FC = () => {
       icon: Star,
       title: 'Multidisciplinary Collaboration',
       description: 'Working with specialists across various medical fields to provide comprehensive, coordinated patient care.',
-      stat: '5+',
-      statLabel: 'Years Experience'
+      stat: '4',
+  statLabel: 'Years Experience'
     }
   ];
 
