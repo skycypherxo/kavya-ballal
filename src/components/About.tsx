@@ -317,7 +317,24 @@ const About: React.FC = () => {
             <cite className="block text-lg font-bold gradient-text-purple">
               — Dr. Kavya Ballal
             </cite>
+
+            {/* Swasth Nari, Sashakt Parivar Abhiyaan Gallery */}
+        <div className="mt-20">
+          <p className="text-xl lg:text-3xl font-bold text-center text-blue-800 mb-8">
+            I had the privilege of interacting with young school students and future nursing professionals under the Swasth Nari, Sashakt Parivar Abhiyaan — a noble initiative of the Government of India under PM Narendra Modi initiative on menstrual hygiene
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 justify-center items-center">
+            <img src="/images/Semi1.jpeg" alt="Swasth Nari Event 1" className="rounded-xl shadow-lg object-cover w-full h-64" />
+            <img src="/images/Semi2.jpeg" alt="Swasth Nari Event 2" className="rounded-xl shadow-lg object-cover w-full h-64" />
+            <img src="/images/Semi3.jpeg" alt="Swasth Nari Event 3" className="rounded-xl shadow-lg object-cover w-full h-64" />
+            <img src="/images/Semi4.jpeg" alt="Swasth Nari Event 4" className="rounded-xl shadow-lg object-cover w-full h-64" />
           </div>
+        </div> 
+
+          </div>
+
+
+          
         </div>
       </div>
     </section>
