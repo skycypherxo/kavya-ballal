@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, Video, Phone, MessageCircle, CheckCircle, Send, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
+import { Calendar, Phone, MessageCircle, CheckCircle, Send, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 const OnlineConsultation: React.FC = () => {
@@ -376,6 +376,7 @@ const handleBookingSubmit = async (e: React.FormEvent) => {
                     <option value="">Select</option>
                     <option value="text">₹400 for chat consultation</option>
                     <option value="video">₹600 for video consultation</option>
+                  <option value="voice">₹600 for voice consultation</option>
                   </select>
                 </div>
               </div>
