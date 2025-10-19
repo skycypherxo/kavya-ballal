@@ -269,6 +269,24 @@ const About: React.FC = () => {
                   ></iframe>
                 </div>
               </div>
+
+              <div>
+                <div className="mb-12">
+                  <h4 className="text-2xl font-bold text-center text-pink-700 mb-4">Session on Menstrual Hygiene Management</h4>
+                  <div className="flex justify-center">
+                    <iframe
+                      src="https://www.instagram.com/reel/DP3wH0MkyVv/embed"
+                      width="400"
+                      height="480"
+                      allowTransparency={true}
+                      allowFullScreen
+                      frameBorder="0"
+                      scrolling="no"
+                      title="Instagram Reel: Menstrual Hygiene Management"
+                      className="rounded-2xl border-2 border-dashed border-pink-300 shadow-2xl"
+                    ></iframe>
+                  </div>
+                </div>
                 {/* Testimonials Section */}
                 <div className="mt-12">
                   <h4 className="text-3xl font-bold text-center text-blue-700 mb-8">Video Testimonials</h4>
@@ -329,6 +347,7 @@ const About: React.FC = () => {
             <img src="/images/Semi3.jpeg" alt="Swasth Nari Event 3" className="rounded-xl shadow-lg object-cover w-full h-64" />
             <img src="/images/Semi4.jpeg" alt="Swasth Nari Event 4" className="rounded-xl shadow-lg object-cover w-full h-64" />
           </div>
+        </div>
         </div> 
 
           </div>
